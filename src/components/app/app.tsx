@@ -14,6 +14,8 @@ import styles from './app.module.css';
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 import { makeProtected } from '@src/utils/routes/make-protected';
 import { AppHeader, OrderInfoModal, IngredientDetailsModal } from '@components';
+import { Provider } from 'react-redux';
+import store from '@src/services/store';
 
 const AppLayout = () => (
   <div className={styles.app}>
@@ -96,6 +98,10 @@ const router = createBrowserRouter([
   }
 ]);
 
-const App = () => <RouterProvider router={router} />;
+const App = () => (
+  <Provider store={store}>
+    <RouterProvider router={router} />
+  </Provider>
+);
 
 export default App;
