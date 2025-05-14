@@ -7,6 +7,7 @@ import {
 import { TConstructorIngredient, TIngredient, TOrder } from '@utils-types';
 import { RootState } from './store';
 import { orderBurgerApi } from '@api';
+import clamp from 'clamp';
 
 export interface BurgerState {
   constructorItems: {
@@ -59,11 +60,38 @@ export const burgerSlice = createSlice({
         id: nanoid()
       });
     },
-    burgerRemoveIngredient: (state, { payload: { id }}: PayloadAction<TConstructorIngredient>) => {
-      state.constructorItems.ingredients = state.constructorItems.ingredients.filter(ingredient => ingredient.id !== id);
+    burgerRemoveIngredient: (
+      state,
+      { payload: { id } }: PayloadAction<TConstructorIngredient>
+    ) => {
+      state.constructorItems.ingredients =
+        state.constructorItems.ingredients.filter(
+          (ingredient) => ingredient.id !== id
+        );
     },
-    burgerMoveIngredientUp: (state, { payload: { id }}: PayloadAction<TConstructorIngredient>) => {
-      
+    burgerMoveIngredient: (
+      state,
+      {
+        payload: { id, shift }
+      }: PayloadAction<TConstructorIngredient & { shift: number }>
+    ) => {
+      if (shift === 0) return;
+
+      const ingredients = state.constructorItems.ingredients;
+      const currentIndex = ingredients.findIndex(
+        (ingredient) => ingredient.id === id
+      );
+      const targetIndex = clamp(
+        currentIndex + shift,
+        0,
+        ingredients.length - 1
+      );
+      if (targetIndex === currentIndex) return;
+
+      [ingredients[currentIndex], ingredients[targetIndex]] = [
+        ingredients[targetIndex],
+        ingredients[currentIndex]
+      ];
     }
   },
   extraReducers: (builder) => {
@@ -86,7 +114,12 @@ export const burgerSlice = createSlice({
   }
 });
 
-export const { burgerClear, burgerAddIngredient } = burgerSlice.actions;
+export const {
+  burgerClear,
+  burgerAddIngredient,
+  burgerRemoveIngredient,
+  burgerMoveIngredient
+} = burgerSlice.actions;
 export const {
   selectConstructorItems,
   selectOrderRequest,
