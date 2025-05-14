@@ -2,13 +2,12 @@ import { FC, useMemo } from 'react';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
 import { useDispatch, useSelector } from '@src/services/store';
+import { burgerClear, burgerMakeOrder } from '@slices';
 import {
-  burgerClear,
-  burgerMakeOrder,
   selectConstructorItems,
-  selectOrderModalData,
-  selectOrderRequest
-} from '@src/services/burger-slice';
+  selectOrderRequest,
+  selectOrderModalData
+} from '@selectors';
 
 export const BurgerConstructor: FC = () => {
   const dispatch = useDispatch();

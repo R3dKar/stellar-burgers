@@ -5,7 +5,7 @@ import {
   PayloadAction
 } from '@reduxjs/toolkit';
 import { TConstructorIngredient, TIngredient, TOrder } from '@utils-types';
-import { RootState } from './store';
+import { RootState } from '@src/services/store';
 import { orderBurgerApi } from '@api';
 import clamp from 'clamp';
 
@@ -106,11 +106,6 @@ export const burgerSlice = createSlice({
       state.orderRequest = false;
       state.orderModalData = payload;
     });
-  },
-  selectors: {
-    selectConstructorItems: (state) => state.constructorItems,
-    selectOrderRequest: (state) => state.orderRequest,
-    selectOrderModalData: (state) => state.orderModalData
   }
 });
 
@@ -120,9 +115,4 @@ export const {
   burgerRemoveIngredient,
   burgerMoveIngredient
 } = burgerSlice.actions;
-export const {
-  selectConstructorItems,
-  selectOrderRequest,
-  selectOrderModalData
-} = burgerSlice.selectors;
-export default burgerSlice.reducer;
+export const burgerReducer = burgerSlice.reducer;

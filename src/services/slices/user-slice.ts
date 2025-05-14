@@ -64,7 +64,7 @@ export const userRetrieve = createAsyncThunk('user/retrieve', async () => {
   return user;
 });
 
-export const userSlice = createSlice({
+const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {},
@@ -93,12 +93,7 @@ export const userSlice = createSlice({
     builder.addCase(userRetrieve.fulfilled, (state, { payload }) => {
       state.user = payload;
     });
-  },
-  selectors: {
-    selectUser: (state) => state.user,
-    selectIsAuthorized: (state) => !!state.user
   }
 });
 
-export const { selectUser, selectIsAuthorized } = userSlice.selectors;
-export default userSlice.reducer;
+export const userReducer = userSlice.reducer;

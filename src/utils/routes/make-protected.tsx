@@ -1,5 +1,5 @@
 import { useSelector } from '@src/services/store';
-import { selectIsAuthorized } from '@src/services/user-slice';
+import { selectIsAuthorized } from '@selectors';
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 

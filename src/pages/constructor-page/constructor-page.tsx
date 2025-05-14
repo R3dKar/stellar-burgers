@@ -2,7 +2,7 @@ import { useSelector } from '@src/services/store';
 import { BurgerIngredients, BurgerConstructor } from '@components';
 import { Preloader } from '@ui';
 import { FC } from 'react';
-import { selectIsIngredientsLoading } from '@src/services/ingredients-slice';
+import { selectIsIngredientsLoading } from '@selectors';
 import styles from './constructor-page.module.css';
 
 export const ConstructorPage: FC = () => {
