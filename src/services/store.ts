@@ -7,12 +7,14 @@ import {
 } from 'react-redux';
 
 import userReducer, { userRetrieve } from './user-slice';
-import ingredientsReducer, { ingredientsRetrieve } from './ingredients-store';
+import ingredientsReducer, { ingredientsRetrieve } from './ingredients-slice';
+import burgerReducer from './burger-slice';
 
 const store = configureStore({
   reducer: {
     user: userReducer,
-    ingredients: ingredientsReducer
+    ingredients: ingredientsReducer,
+    burger: burgerReducer
   },
   devTools: process.env.NODE_ENV !== 'production'
 });

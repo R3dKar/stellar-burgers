@@ -20,5 +20,5 @@ export const makeProtected =
     if (requireAuthorization === isAuthorized) return <Target />;
 
     if (requireAuthorization) return <Navigate to='/login' replace />;
-    else return <Navigate to='/profile' replace />;
+    return <Navigate to='/profile' replace />;
   };
