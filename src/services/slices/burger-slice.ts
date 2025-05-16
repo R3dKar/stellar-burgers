@@ -31,6 +31,8 @@ export const burgerMakeOrder = createAsyncThunk<TOrder, void>(
   'burger/makeOrder',
   async (_, { getState, dispatch }) => {
     const { constructorItems } = (getState() as RootState).burger;
+    dispatch(burgerClear());
+
     const { order } = await orderBurgerApi(
       [
         constructorItems.bun!,
@@ -50,10 +52,6 @@ const burgerSlice = createSlice({
   name: 'burger',
   initialState,
   reducers: {
-    burgerClear: (state) => {
-      state.orderModalData = null;
-      state.constructorItems = { ingredients: [] };
-    },
     burgerAddIngredient: (state, { payload }: PayloadAction<TIngredient>) => {
       if (payload.type === 'bun') {
         state.constructorItems.bun = payload;
@@ -97,6 +95,13 @@ const burgerSlice = createSlice({
         ingredients[targetIndex],
         ingredients[currentIndex]
       ];
+    },
+    burgerDisposeModal: (state) => {
+      state.orderModalData = null;
+      state.orderRequest = false;
+    },
+    burgerClear: (state) => {
+      state.constructorItems = { ingredients: [] };
     }
   },
   extraReducers: (builder) => {
@@ -104,20 +109,23 @@ const burgerSlice = createSlice({
     builder.addCase(burgerMakeOrder.pending, (state) => {
       state.orderRequest = true;
     });
-    builder.addCase(burgerMakeOrder.rejected, (state) => {
-      state.orderRequest = false;
-    });
     builder.addCase(burgerMakeOrder.fulfilled, (state, { payload }) => {
+      if (!state.orderRequest || state.orderModalData) return;
+
       state.orderRequest = false;
       state.orderModalData = payload;
+    });
+    builder.addCase(burgerMakeOrder.rejected, (state) => {
+      state.orderRequest = false;
     });
   }
 });
 
 export const {
-  burgerClear,
   burgerAddIngredient,
   burgerRemoveIngredient,
-  burgerMoveIngredient
+  burgerMoveIngredient,
+  burgerDisposeModal,
+  burgerClear
 } = burgerSlice.actions;
 export const burgerReducer = burgerSlice.reducer;
