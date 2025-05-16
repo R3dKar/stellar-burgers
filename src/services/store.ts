@@ -8,10 +8,7 @@ import {
   userReducer,
   ingredientsReducer,
   burgerReducer,
-  feedReducer,
-  userRetrieve,
-  ingredientsRetrieve,
-  feedRetrieve
+  feedReducer
 } from '@slices';
 
 const store = configureStore({
@@ -32,12 +29,3 @@ export const useDispatch: () => AppDispatch = () => dispatchHook();
 export const useSelector: TypedUseSelectorHook<RootState> = selectorHook;
 
 export default store;
-
-// initial user retreiving
-store.dispatch(userRetrieve());
-
-// initial ingredients retreiving
-store.dispatch(ingredientsRetrieve());
-
-// initial feeds retreiving
-store.dispatch(feedRetrieve());

@@ -20,8 +20,9 @@ import {
   IngredientDetails,
   OrderInfo
 } from '@components';
-import { Provider } from 'react-redux';
-import store from '@src/services/store';
+import { useDispatch } from '@src/services/store';
+import { useEffect } from 'react';
+import { feedRetrieve, ingredientsRetrieve, userRetrieve } from '@slices';
 
 const AppLayout = () => (
   <div className={styles.app}>
@@ -31,11 +32,18 @@ const AppLayout = () => (
 );
 
 const App = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(userRetrieve());
+    dispatch(ingredientsRetrieve());
+    dispatch(feedRetrieve());
+  }, []);
+
   const location = useLocation();
   const backgroundLocation = location.state?.background;
 
   return (
-    <Provider store={store}>
+    <>
       <Routes location={backgroundLocation || location}>
         <Route path='/' element={<AppLayout />}>
           <Route index element={<ConstructorPage />} />
@@ -96,7 +104,7 @@ const App = () => {
           />
         </Routes>
       )}
-    </Provider>
+    </>
   );
 };
 
