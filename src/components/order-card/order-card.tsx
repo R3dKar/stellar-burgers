@@ -7,20 +7,24 @@ import { useSelector } from '@src/services/store';
 import { selectIngredients } from '@selectors';
 
 const maxIngredients = 6;
+const newOrderGap = 30 * 1000;
+const glowDuration = 5 * 1000;
 
-export const OrderCard: FC<OrderCardProps> = memo(({ order }) => {
+export const OrderCard: FC<OrderCardProps> = memo(({ order, highlightNew }) => {
   const location = useLocation();
 
   const ingredients = useSelector(selectIngredients);
 
   const [newOrder, setNewOrder] = useState(
-    () => new Date().getTime() - 30 * 1000 < new Date(order.createdAt).getTime()
+    () =>
+      !!highlightNew &&
+      new Date().getTime() - newOrderGap < new Date(order.createdAt).getTime()
   );
 
   useEffect(() => {
     if (!newOrder) return;
 
-    const timeout = setTimeout(() => setNewOrder(false), 5 * 1000);
+    const timeout = setTimeout(() => setNewOrder(false), glowDuration);
     return () => clearTimeout(timeout);
   }, []);
 
