@@ -1,7 +1,8 @@
 import { useSelector } from '@src/services/store';
-import { selectIsAuthorized } from '@selectors';
+import { selectIsAuthorized, selectIsAuthorizing } from '@selectors';
 import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { Preloader } from '@ui';
 
 export interface ProtectedRouteProps {
   unauthorizedOnly?: boolean;
@@ -12,10 +13,16 @@ export const ProtectedRoute = ({
   unauthorizedOnly,
   children
 }: ProtectedRouteProps) => {
+  const isAuthorizing = useSelector(selectIsAuthorizing);
   const isAuthorized = useSelector(selectIsAuthorized);
+  const location = useLocation();
 
-  if (!unauthorizedOnly === isAuthorized) return children ?? <Outlet />;
+  if (isAuthorizing) return <Preloader />;
 
-  if (!unauthorizedOnly) return <Navigate to='/login' replace />;
-  return <Navigate to='/profile' replace />;
+  if (!unauthorizedOnly && !isAuthorized)
+    return <Navigate to='/login' state={{ from: location }} replace />;
+  if (unauthorizedOnly && isAuthorized)
+    return <Navigate to={location.state?.from || '/'} replace />;
+
+  return children ?? <Outlet />;
 };

@@ -13,11 +13,14 @@ import { deleteCookie, setCookie } from '@src/utils/cookie';
 import { TOrder, TUser } from '@utils-types';
 
 export interface UserState {
+  isAuthorizing: boolean;
   user?: TUser;
   orders?: TOrder[];
 }
 
-const initialState: UserState = {};
+const initialState: UserState = {
+  isAuthorizing: false
+};
 
 export const userLogin = createAsyncThunk(
   'user/login',
@@ -86,19 +89,34 @@ const userSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     // userRegister
+    builder.addCase(userRegister.pending, (state) => {
+      state.isAuthorizing = true;
+    });
     builder.addCase(userRegister.fulfilled, (state, { payload }) => {
       state.user = payload;
+      state.isAuthorizing = false;
+    });
+    builder.addCase(userRegister.rejected, (state) => {
+      state.isAuthorizing = false;
     });
 
     // userLogin
+    builder.addCase(userLogin.pending, (state) => {
+      state.isAuthorizing = true;
+    });
     builder.addCase(userLogin.fulfilled, (state, { payload }) => {
       state.user = payload;
+      state.isAuthorizing = false;
+    });
+    builder.addCase(userLogin.rejected, (state) => {
+      state.isAuthorizing = false;
     });
 
     // userLogout
     builder.addCase(userLogout.fulfilled, (state) => {
       state.user = undefined;
       state.orders = undefined;
+      state.isAuthorizing = false;
     });
 
     // userUpdate
@@ -107,8 +125,15 @@ const userSlice = createSlice({
     });
 
     // userRetrieve
+    builder.addCase(userRetrieve.pending, (state) => {
+      state.isAuthorizing = true;
+    });
     builder.addCase(userRetrieve.fulfilled, (state, { payload }) => {
       state.user = payload;
+      state.isAuthorizing = false;
+    });
+    builder.addCase(userRetrieve.rejected, (state) => {
+      state.isAuthorizing = false;
     });
 
     // userOrdersRetrieve
