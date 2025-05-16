@@ -10,7 +10,7 @@ import { OrderStatus } from '@components';
 import clsx from 'clsx';
 
 export const OrderCardUI: FC<OrderCardUIProps> = memo(
-  ({ orderInfo, maxIngredients, locationState, newOrder }) => (
+  ({ orderInfo, maxIngredients, locationState, highlight }) => (
     <Link
       to={orderInfo.number.toString()}
       relative='path'
@@ -20,7 +20,7 @@ export const OrderCardUI: FC<OrderCardUIProps> = memo(
         'mb-4',
         'mr-2',
         styles.order,
-        newOrder && styles.new
+        highlight && styles.new
       )}
     >
       <div className={styles.order_info}>

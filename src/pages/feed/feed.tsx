@@ -14,6 +14,7 @@ export const Feed: FC = () => {
   const updateFeed = () => dispatch(feedRetrieve());
 
   useEffect(() => {
+    updateFeed();
     const interval = setInterval(updateFeed, 15 * 1000);
     return () => clearInterval(interval);
   }, []);
