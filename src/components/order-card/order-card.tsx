@@ -1,4 +1,4 @@
-import { FC, memo, useMemo } from 'react';
+import { FC, memo, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { OrderCardProps } from './type';
 import { TIngredient } from '@utils-types';
@@ -11,10 +11,21 @@ const maxIngredients = 6;
 export const OrderCard: FC<OrderCardProps> = memo(({ order }) => {
   const location = useLocation();
 
-  const ingredients = useSelector(selectIngredients) ?? [];
+  const ingredients = useSelector(selectIngredients);
+
+  const [newOrder, setNewOrder] = useState(
+    () => new Date().getTime() - 30 * 1000 < new Date(order.createdAt).getTime()
+  );
+
+  useEffect(() => {
+    if (!newOrder) return;
+
+    const timeout = setTimeout(() => setNewOrder(false), 5 * 1000);
+    return () => clearTimeout(timeout);
+  }, []);
 
   const orderInfo = useMemo(() => {
-    if (!ingredients.length) return null;
+    if (!ingredients?.length) return null;
 
     const ingredientsInfo = order.ingredients.reduce(
       (acc: TIngredient[], item: string) => {
@@ -52,6 +63,7 @@ export const OrderCard: FC<OrderCardProps> = memo(({ order }) => {
       orderInfo={orderInfo}
       maxIngredients={maxIngredients}
       locationState={{ background: location }}
+      newOrder={newOrder}
     />
   );
 });

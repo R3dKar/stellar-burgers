@@ -4,8 +4,7 @@ import { ProfileOrdersUI } from '@ui-pages';
 import { FC } from 'react';
 
 export const ProfileOrders: FC = () => {
-  // FIXME: Сделать что-то, когда заказы ещё undefined
-  const orders = useSelector(selectUserOrders)!;
+  const orders = useSelector(selectUserOrders);
 
   return <ProfileOrdersUI orders={orders} />;
 };
