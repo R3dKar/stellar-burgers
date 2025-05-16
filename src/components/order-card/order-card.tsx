@@ -1,9 +1,8 @@
 import { FC, memo, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-
 import { OrderCardProps } from './type';
 import { TIngredient } from '@utils-types';
-import { OrderCardUI } from '../ui/order-card';
+import { OrderCardUI } from '@ui';
 import { useSelector } from '@src/services/store';
 import { selectIngredients } from '@selectors';
 
