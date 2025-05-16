@@ -37,7 +37,9 @@ export const userLogin = createAsyncThunk(
 );
 
 export const userLogout = createAsyncThunk('user/logout', async () => {
-  await logoutApi();
+  try {
+    await logoutApi();
+  } catch {}
 
   deleteCookie('accessToken');
   localStorage.removeItem('refreshToken');
@@ -113,9 +115,15 @@ const userSlice = createSlice({
     });
 
     // userLogout
+    builder.addCase(userLogout.pending, (state) => {
+      state.isAuthorizing = true;
+    });
     builder.addCase(userLogout.fulfilled, (state) => {
       state.user = undefined;
       state.orders = undefined;
+      state.isAuthorizing = false;
+    });
+    builder.addCase(userLogout.rejected, (state) => {
       state.isAuthorizing = false;
     });
 
