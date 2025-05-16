@@ -1,8 +1,17 @@
 .wrap {
-  margin: 0 auto;
+  margin: 120px auto 0;
   width: 640px;
 }
+
+.wrap_modal {
+  margin-top: 0;
+  position: relative;
+  bottom: 45px;
+  margin-bottom: -45px;
+}
+
 .number {
+  display: block;
   text-align: center;
 }
 

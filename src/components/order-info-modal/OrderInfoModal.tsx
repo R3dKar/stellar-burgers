@@ -7,7 +7,7 @@ export const OrderInfoModal = () => {
   const onClose = () => navigate(-1);
 
   return (
-    <Modal onClose={onClose} title='Информация о заказе'>
+    <Modal onClose={onClose} title=''>
       <OrderInfo />
     </Modal>
   );

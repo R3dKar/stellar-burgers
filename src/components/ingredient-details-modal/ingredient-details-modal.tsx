@@ -7,7 +7,7 @@ export const IngredientDetailsModal = () => {
   const onClose = () => navigate(-1);
 
   return (
-    <Modal onClose={onClose} title='Ингредиент'>
+    <Modal onClose={onClose} title='Детали ингредиента'>
       <IngredientDetails />
     </Modal>
   );

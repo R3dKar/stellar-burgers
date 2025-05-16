@@ -7,15 +7,19 @@ import { useLocation, useParams } from 'react-router-dom';
 import { getOrderByNumberApi } from '@api';
 import { cancelable } from 'cancelable-promise';
 
+type Params = {
+  number: string;
+};
+
 export const OrderInfo: FC = () => {
-  const { number } = useParams();
-  const background = useLocation().state?.background;
+  const { number } = useParams<Params>() as Params;
+  const isModal = !!useLocation().state?.background;
 
   const [orderData, setOrderData] = useState<TOrder | undefined>();
   const ingredients = useSelector(selectIngredients);
 
   useEffect(() => {
-    const apiPromise = cancelable(getOrderByNumberApi(+number!)).then((data) =>
+    const apiPromise = cancelable(getOrderByNumberApi(+number)).then((data) =>
       setOrderData(data.orders[0])
     );
 
@@ -68,10 +72,5 @@ export const OrderInfo: FC = () => {
     return <Preloader />;
   }
 
-  return (
-    <>
-      {!background && <div style={{ marginTop: '120px' }} />}
-      <OrderInfoUI orderInfo={orderInfo} />
-    </>
-  );
+  return <OrderInfoUI orderInfo={orderInfo} modal={isModal} />;
 };
