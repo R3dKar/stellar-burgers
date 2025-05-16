@@ -41,7 +41,7 @@ export const burgerMakeOrder = createAsyncThunk<TOrder, void>(
   }
 );
 
-export const burgerSlice = createSlice({
+const burgerSlice = createSlice({
   name: 'burger',
   initialState,
   reducers: {

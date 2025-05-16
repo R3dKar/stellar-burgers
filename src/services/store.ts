@@ -8,15 +8,18 @@ import {
   userReducer,
   ingredientsReducer,
   burgerReducer,
+  feedReducer,
   userRetrieve,
-  ingredientsRetrieve
+  ingredientsRetrieve,
+  feedRetrieve
 } from '@slices';
 
 const store = configureStore({
   reducer: {
     user: userReducer,
     ingredients: ingredientsReducer,
-    burger: burgerReducer
+    burger: burgerReducer,
+    feed: feedReducer
   },
   devTools: process.env.NODE_ENV !== 'production'
 });
@@ -35,3 +38,6 @@ store.dispatch(userRetrieve());
 
 // initial ingredients retreiving
 store.dispatch(ingredientsRetrieve());
+
+// initial feeds retreiving
+store.dispatch(feedRetrieve());
