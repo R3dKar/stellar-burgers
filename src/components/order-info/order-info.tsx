@@ -1,23 +1,29 @@
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { Preloader, OrderInfoUI } from '@ui';
 import { TIngredient, TOrder } from '@utils-types';
 import { selectIngredients } from '@selectors';
 import { useSelector } from '@src/services/store';
-import { LoaderFunctionArgs, useLoaderData } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getOrderByNumberApi } from '@api';
-
-export const OrderInfoLoader = async ({
-  params
-}: LoaderFunctionArgs): Promise<TOrder | undefined> =>
-  (await getOrderByNumberApi(+params.number!)).orders[0];
+import { cancelable } from 'cancelable-promise';
 
 export const OrderInfo: FC = () => {
-  const orderData = useLoaderData() as TOrder | undefined;
-  const ingredients = useSelector(selectIngredients)!;
+  const { number } = useParams();
+
+  const [orderData, setOrderData] = useState<TOrder | undefined>();
+  const ingredients = useSelector(selectIngredients);
+
+  useEffect(() => {
+    const apiPromise = cancelable(getOrderByNumberApi(+number!)).then((data) =>
+      setOrderData(data.orders[0])
+    );
+
+    return () => apiPromise.cancel();
+  }, []);
 
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
-    if (!orderData || !ingredients.length) return null;
+    if (!orderData || !ingredients?.length) return null;
 
     const date = new Date(orderData.createdAt);
 

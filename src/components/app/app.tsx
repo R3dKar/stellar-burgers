@@ -11,14 +11,9 @@ import {
 } from '@pages';
 import '@src/index.css';
 import styles from './app.module.css';
-import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
-import { makeProtected } from '@src/utils/routes/make-protected';
-import {
-  AppHeader,
-  OrderInfoModal,
-  IngredientDetailsModal,
-  OrderInfoLoader
-} from '@components';
+import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
+import { ProtectedRoute } from '@src/utils/routes/protected-route';
+import { AppHeader, OrderInfoModal, IngredientDetailsModal } from '@components';
 import { Provider } from 'react-redux';
 import store from '@src/services/store';
 
@@ -29,85 +24,57 @@ const AppLayout = () => (
   </div>
 );
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    Component: AppLayout,
-    children: [
-      {
-        index: true,
-        Component: ConstructorPage
-      },
-      {
-        path: 'feed',
-        children: [
-          {
-            index: true,
-            Component: Feed
-          },
-          {
-            path: ':number',
-            loader: OrderInfoLoader,
-            Component: OrderInfoModal
-          }
-        ]
-      },
-      {
-        path: 'login',
-        Component: makeProtected(Login, { requireAuthorization: false })
-      },
-      {
-        path: 'register',
-        Component: makeProtected(Register, { requireAuthorization: false })
-      },
-      {
-        path: 'forgot-password',
-        Component: makeProtected(ForgotPassword, {
-          requireAuthorization: false
-        })
-      },
-      {
-        path: 'reset-password',
-        Component: makeProtected(ResetPassword, { requireAuthorization: false })
-      },
-      {
-        path: 'profile',
-        children: [
-          {
-            index: true,
-            Component: makeProtected(Profile)
-          },
-          {
-            path: 'orders',
-            children: [
-              {
-                index: true,
-                Component: makeProtected(ProfileOrders)
-              },
-              {
-                path: ':number',
-                loader: OrderInfoLoader,
-                Component: makeProtected(OrderInfoModal)
-              }
-            ]
-          }
-        ]
-      },
-      {
-        path: 'ingredients/:id',
-        Component: IngredientDetailsModal
-      },
-      {
-        path: '*',
-        Component: NotFound404
-      }
-    ]
-  }
-]);
-
 const App = () => (
   <Provider store={store}>
-    <RouterProvider router={router} />
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<AppLayout />}>
+          <Route index element={<ConstructorPage />} />
+          <Route path='feed' element={<Feed />} />
+          <Route path='feed/:number' element={<OrderInfoModal />} />
+          <Route
+            path='login'
+            element={
+              <ProtectedRoute unauthorizedOnly>
+                <Login />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='register'
+            element={
+              <ProtectedRoute unauthorizedOnly>
+                <Register />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='forgot-password'
+            element={
+              <ProtectedRoute unauthorizedOnly>
+                <ForgotPassword />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='reset-password'
+            element={
+              <ProtectedRoute unauthorizedOnly>
+                <ResetPassword />
+              </ProtectedRoute>
+            }
+          />
+          <Route path='profile' element={<ProtectedRoute />}>
+            <Route index element={<Profile />} />
+            <Route path='orders' element={<ProfileOrders />} />
+            <Route path='orders/:number' element={<OrderInfoModal />} />
+          </Route>
+          <Route path='ingredients/:id' element={<IngredientDetailsModal />} />
+          <Route path='*' element={<NotFound404 />} />
+        </Route>
+      </Routes>
+      {/* <Routes>TODO: перенести модалки сюда</Routes> */}
+    </BrowserRouter>
   </Provider>
 );
 
