@@ -6,8 +6,10 @@ import { burgerDisposeModal, burgerMakeOrder } from '@slices';
 import {
   selectConstructorItems,
   selectOrderRequest,
-  selectOrderModalData
+  selectOrderModalData,
+  selectIsAuthorized
 } from '@selectors';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export const BurgerConstructor: FC = () => {
   const dispatch = useDispatch();
@@ -16,10 +18,15 @@ export const BurgerConstructor: FC = () => {
   const orderRequest = useSelector(selectOrderRequest);
   const orderModalData = useSelector(selectOrderModalData);
 
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isAuthorized = useSelector(selectIsAuthorized);
+
   const onOrderClick = () => {
     if (!constructorItems.bun || orderRequest) return;
 
-    dispatch(burgerMakeOrder());
+    if (isAuthorized) dispatch(burgerMakeOrder());
+    else navigate('/login', { replace: true, state: { from: location } });
   };
 
   const closeOrderModal = () => dispatch(burgerDisposeModal());
