@@ -1,4 +1,5 @@
 import {
+  getOrdersApi,
   getUserApi,
   loginUserApi,
   logoutApi,
@@ -9,21 +10,24 @@ import {
 } from '@api';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { deleteCookie, setCookie } from '@src/utils/cookie';
-import { TUser } from '@utils-types';
+import { TOrder, TUser } from '@utils-types';
 
 export interface UserState {
   user?: TUser;
+  orders?: TOrder[];
 }
 
 const initialState: UserState = {};
 
 export const userLogin = createAsyncThunk(
   'user/login',
-  async (loginData: TLoginData) => {
+  async (loginData: TLoginData, { dispatch }) => {
     const { accessToken, refreshToken, user } = await loginUserApi(loginData);
 
     setCookie('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
+
+    dispatch(userOrdersRetrieve());
 
     return user;
   }
@@ -38,12 +42,14 @@ export const userLogout = createAsyncThunk('user/logout', async () => {
 
 export const userRegister = createAsyncThunk(
   'user/register',
-  async (registerData: TRegisterData) => {
+  async (registerData: TRegisterData, { dispatch }) => {
     const { accessToken, refreshToken, user } =
       await registerUserApi(registerData);
 
     setCookie('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
+
+    dispatch(userOrdersRetrieve());
 
     return user;
   }
@@ -58,11 +64,21 @@ export const userUpdate = createAsyncThunk(
   }
 );
 
-export const userRetrieve = createAsyncThunk('user/retrieve', async () => {
-  const { user } = await getUserApi();
+export const userRetrieve = createAsyncThunk<TUser, void>(
+  'user/retrieve',
+  async (_, { dispatch }) => {
+    const { user } = await getUserApi();
 
-  return user;
-});
+    dispatch(userOrdersRetrieve());
+
+    return user;
+  }
+);
+
+export const userOrdersRetrieve = createAsyncThunk(
+  'user/ordersRetrieve',
+  async () => getOrdersApi()
+);
 
 const userSlice = createSlice({
   name: 'user',
@@ -82,6 +98,7 @@ const userSlice = createSlice({
     // userLogout
     builder.addCase(userLogout.fulfilled, (state) => {
       state.user = undefined;
+      state.orders = undefined;
     });
 
     // userUpdate
@@ -92,6 +109,11 @@ const userSlice = createSlice({
     // userRetrieve
     builder.addCase(userRetrieve.fulfilled, (state, { payload }) => {
       state.user = payload;
+    });
+
+    // userOrdersRetrieve
+    builder.addCase(userOrdersRetrieve.fulfilled, (state, { payload }) => {
+      state.orders = payload;
     });
   }
 });
