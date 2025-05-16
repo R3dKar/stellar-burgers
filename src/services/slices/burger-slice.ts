@@ -8,6 +8,7 @@ import { TConstructorIngredient, TIngredient, TOrder } from '@utils-types';
 import { RootState } from '@src/services/store';
 import { orderBurgerApi } from '@api';
 import clamp from 'clamp';
+import { userOrdersRetrieve, feedRetrieve } from '@slices';
 
 export interface BurgerState {
   constructorItems: {
@@ -28,7 +29,7 @@ const initialState: BurgerState = {
 
 export const burgerMakeOrder = createAsyncThunk<TOrder, void>(
   'burger/makeOrder',
-  async (_, { getState }) => {
+  async (_, { getState, dispatch }) => {
     const { constructorItems } = (getState() as RootState).burger;
     const { order } = await orderBurgerApi(
       [
@@ -37,6 +38,10 @@ export const burgerMakeOrder = createAsyncThunk<TOrder, void>(
         constructorItems.bun!
       ].map((ingredient) => ingredient._id)
     );
+
+    dispatch(feedRetrieve());
+    dispatch(userOrdersRetrieve());
+
     return order;
   }
 );

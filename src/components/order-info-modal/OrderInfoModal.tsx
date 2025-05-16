@@ -1,12 +1,10 @@
 import { Modal, OrderInfo } from '@components';
-import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const OrderInfoModal = () => {
-  const [opened, setOpened] = useState(true);
+  const navigate = useNavigate();
 
-  if (!opened) return null;
-
-  const onClose = () => setOpened(false);
+  const onClose = () => navigate(-1);
 
   return (
     <Modal onClose={onClose} title='Информация о заказе'>

@@ -1,21 +1,19 @@
 import { FC, useMemo } from 'react';
-import { Preloader } from '../ui/preloader';
-import { OrderInfoUI } from '../ui/order-info';
-import { TIngredient } from '@utils-types';
+import { Preloader, OrderInfoUI } from '@ui';
+import { TIngredient, TOrder } from '@utils-types';
+import { selectIngredients } from '@selectors';
+import { useSelector } from '@src/services/store';
+import { LoaderFunctionArgs, useLoaderData } from 'react-router-dom';
+import { getOrderByNumberApi } from '@api';
+
+export const OrderInfoLoader = async ({
+  params
+}: LoaderFunctionArgs): Promise<TOrder | undefined> =>
+  (await getOrderByNumberApi(+params.number!)).orders[0];
 
 export const OrderInfo: FC = () => {
-  /** TODO: взять переменные orderData и ingredients из стора */
-  const orderData = {
-    createdAt: '',
-    ingredients: [],
-    _id: '',
-    status: '',
-    name: '',
-    updatedAt: 'string',
-    number: 0
-  };
-
-  const ingredients: TIngredient[] = [];
+  const orderData = useLoaderData() as TOrder | undefined;
+  const ingredients = useSelector(selectIngredients)!;
 
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {

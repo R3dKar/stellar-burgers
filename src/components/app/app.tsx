@@ -13,7 +13,12 @@ import '@src/index.css';
 import styles from './app.module.css';
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 import { makeProtected } from '@src/utils/routes/make-protected';
-import { AppHeader, OrderInfoModal, IngredientDetailsModal } from '@components';
+import {
+  AppHeader,
+  OrderInfoModal,
+  IngredientDetailsModal,
+  OrderInfoLoader
+} from '@components';
 import { Provider } from 'react-redux';
 import store from '@src/services/store';
 
@@ -42,6 +47,7 @@ const router = createBrowserRouter([
           },
           {
             path: ':number',
+            loader: OrderInfoLoader,
             Component: OrderInfoModal
           }
         ]
@@ -80,7 +86,8 @@ const router = createBrowserRouter([
               },
               {
                 path: ':number',
-                Component: OrderInfoModal
+                loader: OrderInfoLoader,
+                Component: makeProtected(OrderInfoModal)
               }
             ]
           }
