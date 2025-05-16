@@ -11,9 +11,15 @@ import {
 } from '@pages';
 import '@src/index.css';
 import styles from './app.module.css';
-import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
+import { Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import { ProtectedRoute } from '@src/utils/routes/protected-route';
-import { AppHeader, OrderInfoModal, IngredientDetailsModal } from '@components';
+import {
+  AppHeader,
+  OrderInfoModal,
+  IngredientDetailsModal,
+  IngredientDetails,
+  OrderInfo
+} from '@components';
 import { Provider } from 'react-redux';
 import store from '@src/services/store';
 
@@ -24,14 +30,17 @@ const AppLayout = () => (
   </div>
 );
 
-const App = () => (
-  <Provider store={store}>
-    <BrowserRouter>
-      <Routes>
+const App = () => {
+  const location = useLocation();
+  const backgroundLocation = location.state?.background;
+
+  return (
+    <Provider store={store}>
+      <Routes location={backgroundLocation || location}>
         <Route path='/' element={<AppLayout />}>
           <Route index element={<ConstructorPage />} />
           <Route path='feed' element={<Feed />} />
-          <Route path='feed/:number' element={<OrderInfoModal />} />
+          <Route path='feed/:number' element={<OrderInfo />} />
           <Route
             path='login'
             element={
@@ -67,15 +76,28 @@ const App = () => (
           <Route path='profile' element={<ProtectedRoute />}>
             <Route index element={<Profile />} />
             <Route path='orders' element={<ProfileOrders />} />
-            <Route path='orders/:number' element={<OrderInfoModal />} />
+            <Route path='orders/:number' element={<OrderInfo />} />
           </Route>
-          <Route path='ingredients/:id' element={<IngredientDetailsModal />} />
+          <Route path='ingredients/:id' element={<IngredientDetails />} />
           <Route path='*' element={<NotFound404 />} />
         </Route>
       </Routes>
-      {/* <Routes>TODO: перенести модалки сюда</Routes> */}
-    </BrowserRouter>
-  </Provider>
-);
+      {backgroundLocation && (
+        <Routes>
+          <Route path='ingredients/:id' element={<IngredientDetailsModal />} />
+          <Route path='feed/:number' element={<OrderInfoModal />} />
+          <Route
+            path='profile/orders/:number'
+            element={
+              <ProtectedRoute>
+                <OrderInfoModal />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      )}
+    </Provider>
+  );
+};
 
 export default App;

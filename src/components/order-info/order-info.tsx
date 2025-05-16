@@ -3,12 +3,13 @@ import { Preloader, OrderInfoUI } from '@ui';
 import { TIngredient, TOrder } from '@utils-types';
 import { selectIngredients } from '@selectors';
 import { useSelector } from '@src/services/store';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { getOrderByNumberApi } from '@api';
 import { cancelable } from 'cancelable-promise';
 
 export const OrderInfo: FC = () => {
   const { number } = useParams();
+  const background = useLocation().state?.background;
 
   const [orderData, setOrderData] = useState<TOrder | undefined>();
   const ingredients = useSelector(selectIngredients);
@@ -67,5 +68,10 @@ export const OrderInfo: FC = () => {
     return <Preloader />;
   }
 
-  return <OrderInfoUI orderInfo={orderInfo} />;
+  return (
+    <>
+      {!background && <div style={{ marginTop: '120px' }} />}
+      <OrderInfoUI orderInfo={orderInfo} />
+    </>
+  );
 };
