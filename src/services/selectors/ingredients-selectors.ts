@@ -15,3 +15,8 @@ export const selectMains = createSelector(selectIngredients, (ingredients) =>
 export const selectSauces = createSelector(selectIngredients, (ingredients) =>
   ingredients?.filter((ingridient) => ingridient.type === 'sauce')
 );
+
+export const selectIngredientById = (id: string) =>
+  createSelector(selectIngredients, (ingredients) =>
+    ingredients?.find((ingredient) => ingredient._id === id)
+  );
