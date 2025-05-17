@@ -8,7 +8,7 @@ export interface FeedState {
   totalToday: number;
 }
 
-const initialState: FeedState = {
+export const initialState: FeedState = {
   orders: [],
   total: 0,
   totalToday: 0

@@ -18,7 +18,7 @@ export interface UserState {
   orders?: TOrder[];
 }
 
-const initialState: UserState = {
+export const initialState: UserState = {
   isAuthorizing: false
 };
 

@@ -6,7 +6,7 @@ export interface IngredientsState {
   ingredients?: TIngredient[];
 }
 
-const initialState: IngredientsState = {};
+export const initialState: IngredientsState = {};
 
 export const ingredientsRetrieve = createAsyncThunk(
   'ingredients/retrieve',
