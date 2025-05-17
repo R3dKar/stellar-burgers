@@ -25,7 +25,7 @@ export const BurgerConstructor: FC = () => {
   const onOrderClick = () => {
     if (!constructorItems.bun || orderRequest) return;
 
-    if (isAuthorized) dispatch(burgerMakeOrder());
+    if (isAuthorized) dispatch(burgerMakeOrder(constructorItems));
     else navigate('/login', { replace: true, state: { from: location } });
   };
 

@@ -5,7 +5,6 @@ import {
   PayloadAction
 } from '@reduxjs/toolkit';
 import { TConstructorIngredient, TIngredient, TOrder } from '@utils-types';
-import { RootState } from '@src/services/store';
 import { orderBurgerApi } from '@api';
 import clamp from 'clamp';
 import { userOrdersRetrieve } from '@slices';
@@ -27,11 +26,9 @@ export const initialState: BurgerState = {
   orderModalData: null
 };
 
-export const burgerMakeOrder = createAsyncThunk<TOrder, void>(
+export const burgerMakeOrder = createAsyncThunk(
   'burger/makeOrder',
-  async (_, { getState, dispatch }) => {
-    const { constructorItems } = (getState() as RootState).burger;
-
+  async (constructorItems: BurgerState['constructorItems'], { dispatch }) => {
     const { order } = await orderBurgerApi(
       [
         constructorItems.bun!,
@@ -107,13 +104,13 @@ const burgerSlice = createSlice({
     // burgerMakeOrder
     builder.addCase(burgerMakeOrder.pending, (state) => {
       state.orderRequest = true;
+      state.constructorItems = { ingredients: [] };
     });
     builder.addCase(burgerMakeOrder.fulfilled, (state, { payload }) => {
       if (!state.orderRequest || state.orderModalData) return;
 
       state.orderRequest = false;
       state.orderModalData = payload;
-      state.constructorItems = { ingredients: [] };
     });
     builder.addCase(burgerMakeOrder.rejected, (state) => {
       state.orderRequest = false;

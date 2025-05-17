@@ -336,6 +336,7 @@ describe('burgerSlice', () => {
       });
 
       expect(state.orderRequest).toBe(true);
+      expect(state.constructorItems).toEqual(initialState.constructorItems);
     });
 
     it('handles success of making order', () => {
@@ -349,7 +350,6 @@ describe('burgerSlice', () => {
 
       expect(state.orderRequest).toBe(false);
       expect(state.orderModalData).toEqual(modalState.orderModalData);
-      expect(state.constructorItems).toEqual(initialState.constructorItems);
     });
 
     it('handles failure of making order', () => {
