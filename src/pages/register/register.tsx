@@ -24,7 +24,9 @@ export const Register: FC = () => {
       ).unwrap();
     } catch (err) {
       const message = (err as { message: string }).message;
-      const messageMap: Record<string, string> = {};
+      const messageMap: Record<string, string> = {
+        'User already exists': 'Почта уже используется'
+      };
 
       setError(messageMap[message] ?? 'Неизвестная ошибка');
     }
