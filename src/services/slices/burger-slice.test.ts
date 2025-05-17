@@ -144,16 +144,11 @@ describe('burgerSlice', () => {
       );
 
       expect(state.constructorItems.ingredients).toHaveLength(1);
-      expect(state.constructorItems.ingredients[0]).toMatchObject(
-        ingredient
-      );
+      expect(state.constructorItems.ingredients[0]).toMatchObject(ingredient);
     });
 
     it('handles adding ingredient to filled state', () => {
-      const state = burgerReducer(
-        filledState,
-        burgerAddIngredient(ingredient)
-      );
+      const state = burgerReducer(filledState, burgerAddIngredient(ingredient));
 
       expect(state.constructorItems.ingredients).toHaveLength(
         filledState.constructorItems.ingredients.length + 1
@@ -166,20 +161,14 @@ describe('burgerSlice', () => {
     });
 
     it('handles adding bun to empty state', () => {
-      const state = burgerReducer(
-        initialState,
-        burgerAddIngredient(bun)
-      );
+      const state = burgerReducer(initialState, burgerAddIngredient(bun));
 
       expect(state.constructorItems.ingredients).toHaveLength(0);
       expect(state.constructorItems.bun).toEqual(bun);
     });
 
     it('handles adding bun to filled state', () => {
-      const state = burgerReducer(
-        filledState,
-        burgerAddIngredient(bun)
-      );
+      const state = burgerReducer(filledState, burgerAddIngredient(bun));
 
       expect(state.constructorItems.ingredients).toEqual(
         filledState.constructorItems.ingredients
