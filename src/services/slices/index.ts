@@ -5,7 +5,8 @@ export {
   userOrdersRetrieve,
   userReducer,
   userRegister,
-  userRetrieve
+  userRetrieve,
+  userUpdate
 } from './user-slice';
 export type { BurgerState } from './burger-slice';
 export {
