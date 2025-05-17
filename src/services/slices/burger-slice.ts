@@ -31,7 +31,6 @@ export const burgerMakeOrder = createAsyncThunk<TOrder, void>(
   'burger/makeOrder',
   async (_, { getState, dispatch }) => {
     const { constructorItems } = (getState() as RootState).burger;
-    dispatch(burgerClear());
 
     const { order } = await orderBurgerApi(
       [
@@ -83,6 +82,7 @@ const burgerSlice = createSlice({
       const currentIndex = ingredients.findIndex(
         (ingredient) => ingredient.id === id
       );
+      if (currentIndex === -1) return;
       const targetIndex = clamp(
         currentIndex + shift,
         0,
@@ -113,6 +113,7 @@ const burgerSlice = createSlice({
 
       state.orderRequest = false;
       state.orderModalData = payload;
+      state.constructorItems = { ingredients: [] };
     });
     builder.addCase(burgerMakeOrder.rejected, (state) => {
       state.orderRequest = false;
