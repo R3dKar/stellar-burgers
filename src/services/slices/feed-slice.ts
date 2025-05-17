@@ -14,7 +14,7 @@ export const initialState: FeedState = {
   totalToday: 0
 };
 
-export const feedRetrieve = createAsyncThunk('feeds/retrieve', async () =>
+export const feedRetrieve = createAsyncThunk('feed/retrieve', async () =>
   getFeedsApi()
 );
 

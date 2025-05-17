@@ -12,7 +12,7 @@ import {
 } from './burger-slice';
 import { TIngredient } from '@utils-types';
 
-const testingState: BurgerState = {
+const filledState: BurgerState = {
   constructorItems: {
     ingredients: [
       {
@@ -79,7 +79,7 @@ const testingState: BurgerState = {
   orderModalData: null
 };
 
-const testingModalState: BurgerState = {
+const modalState: BurgerState = {
   constructorItems: {
     ingredients: []
   },
@@ -101,7 +101,7 @@ const testingModalState: BurgerState = {
   }
 };
 
-const testingIngredient: TIngredient = {
+const ingredient: TIngredient = {
   _id: '643d69a5c3f7b9001cfa093f',
   name: 'Мясо бессмертных моллюсков Protostomia',
   type: 'main',
@@ -115,7 +115,7 @@ const testingIngredient: TIngredient = {
   image_large: 'https://code.s3.yandex.net/react/code/meat-02-large.png'
 };
 
-const testingBun: TIngredient = {
+const bun: TIngredient = {
   _id: '643d69a5c3f7b9001cfa093d',
   name: 'Флюоресцентная булка R2-D3',
   type: 'bun',
@@ -130,61 +130,61 @@ const testingBun: TIngredient = {
 };
 
 describe('burgerSlice', () => {
-  it('should init properly', () => {
+  it('should init', () => {
     const state = burgerReducer(undefined, { type: 'UNKNOWN_ACTION' });
 
     expect(state).toEqual(initialState);
   });
 
   describe('adding ingredient', () => {
-    it('handles adding ingredient to empty state correctly', () => {
+    it('handles adding ingredient to empty state', () => {
       const state = burgerReducer(
         initialState,
-        burgerAddIngredient(testingIngredient)
+        burgerAddIngredient(ingredient)
       );
 
       expect(state.constructorItems.ingredients).toHaveLength(1);
       expect(state.constructorItems.ingredients[0]).toMatchObject(
-        testingIngredient
+        ingredient
       );
     });
 
-    it('handles adding ingredient to filled state correctly', () => {
+    it('handles adding ingredient to filled state', () => {
       const state = burgerReducer(
-        testingState,
-        burgerAddIngredient(testingIngredient)
+        filledState,
+        burgerAddIngredient(ingredient)
       );
 
       expect(state.constructorItems.ingredients).toHaveLength(
-        testingState.constructorItems.ingredients.length + 1
+        filledState.constructorItems.ingredients.length + 1
       );
       expect(
         state.constructorItems.ingredients[
           state.constructorItems.ingredients.length - 1
         ]
-      ).toMatchObject(testingIngredient);
+      ).toMatchObject(ingredient);
     });
 
-    it('handles adding bun to empty state correctly', () => {
+    it('handles adding bun to empty state', () => {
       const state = burgerReducer(
         initialState,
-        burgerAddIngredient(testingBun)
+        burgerAddIngredient(bun)
       );
 
       expect(state.constructorItems.ingredients).toHaveLength(0);
-      expect(state.constructorItems.bun).toEqual(testingBun);
+      expect(state.constructorItems.bun).toEqual(bun);
     });
 
-    it('handles adding bun to filled state correctly', () => {
+    it('handles adding bun to filled state', () => {
       const state = burgerReducer(
-        testingState,
-        burgerAddIngredient(testingBun)
+        filledState,
+        burgerAddIngredient(bun)
       );
 
       expect(state.constructorItems.ingredients).toEqual(
-        testingState.constructorItems.ingredients
+        filledState.constructorItems.ingredients
       );
-      expect(state.constructorItems.bun).toEqual(testingBun);
+      expect(state.constructorItems.bun).toEqual(bun);
     });
   });
 
@@ -192,7 +192,7 @@ describe('burgerSlice', () => {
     it('handles deleting ingredient from empty state', () => {
       const state = burgerReducer(
         initialState,
-        burgerRemoveIngredient(testingState.constructorItems.ingredients[0])
+        burgerRemoveIngredient(filledState.constructorItems.ingredients[0])
       );
 
       expect(state).toEqual(initialState);
@@ -200,22 +200,22 @@ describe('burgerSlice', () => {
 
     it('handles deleting unexisting ingredient', () => {
       const state = burgerReducer(
-        testingState,
-        burgerRemoveIngredient({ ...testingIngredient, id: 'doesnt exists' })
+        filledState,
+        burgerRemoveIngredient({ ...ingredient, id: 'doesnt exists' })
       );
 
-      expect(state).toEqual(testingState);
+      expect(state).toEqual(filledState);
     });
 
-    it('handles deleting ingredient normally', () => {
-      const targetIngredient = testingState.constructorItems.ingredients[1];
+    it('handles deleting ingredient', () => {
+      const targetIngredient = filledState.constructorItems.ingredients[1];
       const state = burgerReducer(
-        testingState,
+        filledState,
         burgerRemoveIngredient(targetIngredient)
       );
 
       expect(state.constructorItems.ingredients).toHaveLength(
-        testingState.constructorItems.ingredients.length - 1
+        filledState.constructorItems.ingredients.length - 1
       );
       expect(state.constructorItems.ingredients).not.toContain(
         targetIngredient
@@ -225,102 +225,102 @@ describe('burgerSlice', () => {
 
   describe('moving ingredient', () => {
     it('handles moving ingridient with 0 shift', () => {
-      const targetIngredient = testingState.constructorItems.ingredients[1];
+      const targetIngredient = filledState.constructorItems.ingredients[1];
       const state = burgerReducer(
-        testingState,
+        filledState,
         burgerMoveIngredient({ ...targetIngredient, shift: 0 })
       );
 
-      expect(state).toEqual(testingState);
+      expect(state).toEqual(filledState);
     });
 
     it('handles moving unexisting ingredient', () => {
       const state = burgerReducer(
-        testingState,
+        filledState,
         burgerMoveIngredient({
-          ...testingIngredient,
+          ...ingredient,
           id: 'doesnt exists',
           shift: 1
         })
       );
 
-      expect(state).toEqual(testingState);
+      expect(state).toEqual(filledState);
     });
 
     it('handles moving ingredient up', () => {
-      const targetIngredient = testingState.constructorItems.ingredients[1];
+      const targetIngredient = filledState.constructorItems.ingredients[1];
       const state = burgerReducer(
-        testingState,
+        filledState,
         burgerMoveIngredient({ ...targetIngredient, shift: -1 })
       );
 
       expect(state.constructorItems.ingredients).toHaveLength(
-        testingState.constructorItems.ingredients.length
+        filledState.constructorItems.ingredients.length
       );
       expect(state.constructorItems.ingredients[0]).toEqual(targetIngredient);
       expect(state.constructorItems.ingredients[1]).toEqual(
-        testingState.constructorItems.ingredients[0]
+        filledState.constructorItems.ingredients[0]
       );
     });
 
     it('handles moving ingredient down', () => {
-      const targetIngredient = testingState.constructorItems.ingredients[1];
+      const targetIngredient = filledState.constructorItems.ingredients[1];
       const state = burgerReducer(
-        testingState,
+        filledState,
         burgerMoveIngredient({ ...targetIngredient, shift: 1 })
       );
 
       expect(state.constructorItems.ingredients).toHaveLength(
-        testingState.constructorItems.ingredients.length
+        filledState.constructorItems.ingredients.length
       );
       expect(state.constructorItems.ingredients[2]).toEqual(targetIngredient);
       expect(state.constructorItems.ingredients[1]).toEqual(
-        testingState.constructorItems.ingredients[2]
+        filledState.constructorItems.ingredients[2]
       );
     });
 
     it('handles moving ingredient far up', () => {
-      const targetIngredient = testingState.constructorItems.ingredients[2];
+      const targetIngredient = filledState.constructorItems.ingredients[2];
       const state = burgerReducer(
-        testingState,
+        filledState,
         burgerMoveIngredient({ ...targetIngredient, shift: -10 })
       );
 
       expect(state.constructorItems.ingredients).toHaveLength(
-        testingState.constructorItems.ingredients.length
+        filledState.constructorItems.ingredients.length
       );
       expect(state.constructorItems.ingredients[0]).toEqual(targetIngredient);
       expect(state.constructorItems.ingredients[2]).toEqual(
-        testingState.constructorItems.ingredients[0]
+        filledState.constructorItems.ingredients[0]
       );
     });
 
     it('handles moving ingredient far down', () => {
-      const targetIngredient = testingState.constructorItems.ingredients[0];
+      const targetIngredient = filledState.constructorItems.ingredients[0];
       const state = burgerReducer(
-        testingState,
+        filledState,
         burgerMoveIngredient({ ...targetIngredient, shift: 10 })
       );
 
       expect(state.constructorItems.ingredients).toHaveLength(
-        testingState.constructorItems.ingredients.length
+        filledState.constructorItems.ingredients.length
       );
       expect(state.constructorItems.ingredients[2]).toEqual(targetIngredient);
       expect(state.constructorItems.ingredients[0]).toEqual(
-        testingState.constructorItems.ingredients[2]
+        filledState.constructorItems.ingredients[2]
       );
     });
   });
 
   describe('clearing ingredients', () => {
     it('handles clearing empty state', () => {
-      const state = burgerReducer(testingModalState, burgerClear());
+      const state = burgerReducer(modalState, burgerClear());
 
-      expect(state).toEqual(testingModalState);
+      expect(state).toEqual(modalState);
     });
 
     it('handles clearing filled state', () => {
-      const state = burgerReducer(testingState, burgerClear());
+      const state = burgerReducer(filledState, burgerClear());
 
       expect(state).toEqual(initialState);
     });
@@ -334,42 +334,42 @@ describe('burgerSlice', () => {
     });
 
     it('handles clearing modal info in filled state', () => {
-      const state = burgerReducer(testingModalState, burgerDisposeModal());
+      const state = burgerReducer(modalState, burgerDisposeModal());
 
       expect(state).toEqual(initialState);
     });
   });
 
   describe('making order', () => {
-    it('handles start of ordering properly', () => {
-      const state = burgerReducer(testingState, {
+    it('handles start of making order', () => {
+      const state = burgerReducer(filledState, {
         type: burgerMakeOrder.pending.type
       });
 
-      expect(state.orderRequest).toBeTruthy();
+      expect(state.orderRequest).toBe(true);
     });
 
-    it('handles success of ordering properly', () => {
+    it('handles success of making order', () => {
       const state = burgerReducer(
-        { ...testingState, orderRequest: true },
+        { ...filledState, orderRequest: true },
         {
           type: burgerMakeOrder.fulfilled.type,
-          payload: testingModalState.orderModalData
+          payload: modalState.orderModalData
         }
       );
 
-      expect(state.orderRequest).toBeFalsy();
-      expect(state.orderModalData).toEqual(testingModalState.orderModalData);
+      expect(state.orderRequest).toBe(false);
+      expect(state.orderModalData).toEqual(modalState.orderModalData);
       expect(state.constructorItems).toEqual(initialState.constructorItems);
     });
 
-    it('handles failure of ordering properly', () => {
+    it('handles failure of making order', () => {
       const state = burgerReducer(
-        { ...testingState, orderRequest: true },
+        { ...filledState, orderRequest: true },
         { type: burgerMakeOrder.rejected.type }
       );
 
-      expect(state).toEqual(testingState);
+      expect(state).toEqual(filledState);
     });
   });
 });
