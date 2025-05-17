@@ -4,6 +4,8 @@ const ESLintPlugin = require('eslint-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 
+require('dotenv').config();
+
 module.exports = function(_, argv) {
   const debug = argv.mode !== 'production';
   return {
@@ -59,6 +61,11 @@ module.exports = function(_, argv) {
         template: './public/index.html',
         favicon: './public/favicon.png'
       }),
+      new HtmlWebpackPlugin({
+        template: './public/404.html',
+        favicon: './public/favicon.png',
+        filename: '404.html'
+      }),
       new Dotenv({ safe: true })
     ],
     resolve: {
@@ -89,7 +96,8 @@ module.exports = function(_, argv) {
     },
     output: {
       path: path.resolve(__dirname, './dist'),
-      filename: 'bundle.js'
+      filename: 'bundle.js',
+      publicPath: process.env.PUBLIC_PATH ?? '/',
     },
     devServer: {
       static: path.join(__dirname, './dist'),

@@ -10,7 +10,7 @@ const root = ReactDOMClient.createRoot(container!);
 
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename={process.env.PUBLIC_PATH ?? '/'}>
       <Provider store={store}>
         <App />
       </Provider>
