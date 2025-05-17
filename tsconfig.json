@@ -27,7 +27,8 @@
       "@slices": ["src/services/slices"],
       "@selectors": ["src/services/selectors"],
       "@src/*": ["src/*"]
-    }
+    },
+    "sourceMap": true
   },
   "include": ["src"]
 }
