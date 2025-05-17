@@ -56,7 +56,8 @@ module.exports = function(_, argv) {
         extensions: ['.js', '.jsx', '.ts', '.tsx']
       }),
       new HtmlWebpackPlugin({
-        template: './public/index.html'
+        template: './public/index.html',
+        favicon: './public/favicon.png'
       }),
       new Dotenv({ safe: true })
     ],
