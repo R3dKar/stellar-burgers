@@ -12,6 +12,11 @@
   border-radius: 40px;
   min-width: 576px;
   box-sizing: border-box;
+  transition: ease 1s box-shadow;
+}
+
+.new {
+  box-shadow: 0 4px 32px 0 #3333ff80, 0 0 8px 8px #3333ff40 , 0 0 16px 8px #3333ff40;
 }
 
 .order_info {

@@ -1,24 +1,35 @@
 import { FC, useMemo } from 'react';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
+import { useDispatch, useSelector } from '@src/services/store';
+import { burgerDisposeModal, burgerMakeOrder } from '@slices';
+import {
+  selectConstructorItems,
+  selectOrderRequest,
+  selectOrderModalData,
+  selectIsAuthorized
+} from '@selectors';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export const BurgerConstructor: FC = () => {
-  /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
-  const constructorItems = {
-    bun: {
-      price: 0
-    },
-    ingredients: []
-  };
+  const dispatch = useDispatch();
 
-  const orderRequest = false;
+  const constructorItems = useSelector(selectConstructorItems);
+  const orderRequest = useSelector(selectOrderRequest);
+  const orderModalData = useSelector(selectOrderModalData);
 
-  const orderModalData = null;
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isAuthorized = useSelector(selectIsAuthorized);
 
   const onOrderClick = () => {
     if (!constructorItems.bun || orderRequest) return;
+
+    if (isAuthorized) dispatch(burgerMakeOrder(constructorItems));
+    else navigate('/login', { replace: true, state: { from: location } });
   };
-  const closeOrderModal = () => {};
+
+  const closeOrderModal = () => dispatch(burgerDisposeModal());
 
   const price = useMemo(
     () =>
@@ -29,8 +40,6 @@ export const BurgerConstructor: FC = () => {
       ),
     [constructorItems]
   );
-
-  return null;
 
   return (
     <BurgerConstructorUI

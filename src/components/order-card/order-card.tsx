@@ -1,20 +1,37 @@
-import { FC, memo, useMemo } from 'react';
+import { FC, memo, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-
 import { OrderCardProps } from './type';
 import { TIngredient } from '@utils-types';
-import { OrderCardUI } from '../ui/order-card';
+import { OrderCardUI } from '@ui';
+import { useSelector } from '@src/services/store';
+import { selectIngredients } from '@selectors';
 
 const maxIngredients = 6;
+const newOrderDuration = 30 * 1000;
+const glowDuration = 5 * 1000;
 
-export const OrderCard: FC<OrderCardProps> = memo(({ order }) => {
+export const OrderCard: FC<OrderCardProps> = memo(({ order, highlight }) => {
   const location = useLocation();
 
-  /** TODO: взять переменную из стора */
-  const ingredients: TIngredient[] = [];
+  const ingredients = useSelector(selectIngredients);
+
+  const [doHighlight, setDoHightlight] = useState(() => {
+    const now = new Date().getTime();
+    const created = new Date(order.createdAt).getTime();
+    if (now - newOrderDuration > created) return false;
+
+    return highlight;
+  });
+
+  useEffect(() => {
+    if (!doHighlight) return;
+
+    const timeout = setTimeout(() => setDoHightlight(false), glowDuration);
+    return () => clearTimeout(timeout);
+  }, []);
 
   const orderInfo = useMemo(() => {
-    if (!ingredients.length) return null;
+    if (!ingredients?.length) return null;
 
     const ingredientsInfo = order.ingredients.reduce(
       (acc: TIngredient[], item: string) => {
@@ -52,6 +69,7 @@ export const OrderCard: FC<OrderCardProps> = memo(({ order }) => {
       orderInfo={orderInfo}
       maxIngredients={maxIngredients}
       locationState={{ background: location }}
+      highlight={doHighlight}
     />
   );
 });
